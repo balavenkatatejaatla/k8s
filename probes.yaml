@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-probe-check
+  namespace: teja-ns
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+        containers:
+          - name: nginx-container
+            image: nginx:1.21.6
+            ports:
+              - containerPort: 80
+            # Liveness Probe (HTTP)
+            livenessProbe:
+              httpGet:
+                path: /
+                port: 80
+              initialDelaySeconds: 15
+              periodSeconds: 20
+            # Readiness Probe (TCP Socket)
+            readinessProbe:
+              tcpSocket:
+                port: 80
+              initialDelaySeconds: 10
+              periodSeconds: 10
+            # Startup Probe (Exec)
+            startupProbe:
+              exec:
+                command:
+                  - sh
+                  - -c
+                  - 'ps aux | grep nginx | grep -q -E "master process" && echo "Nginx master process running"'
+              initialDelaySeconds: 5
+              timeoutSeconds: 1
+
+

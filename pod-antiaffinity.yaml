@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-antiaffinity
+  namespace: teja-ns
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx-dev
+      tier: dev
+  template:
+      metadata:
+        labels:
+          app: nginx-dev
+          tier: dev
+      spec:
+        containers:
+          - name: nginx-container
+            image: nginx:latest
+        tolerations:
+          - key: "nginx-enabled"
+            operator: "Equal"
+            value: "true"
+            effect: "NoSchedule"
+          - key: "nginx-enabled"
+            operator: "Equal"
+            value: "false"
+            effect: "NoSchedule"
+        affinity:
+          podAntiAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              - labelSelector:
+                  matchExpressions:
+                    - key: tier
+                      operator: In
+                      values:
+                        - qa
+                        - dev
+                topologyKey: kubernetes.io/hostname 
+
+
+
+

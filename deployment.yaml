@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: nginx-deployment
+  namespace: teja-ns
+  labels:
+    type: dev
+spec: 
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      type: dev
+  template:
+      metadata:
+        labels:
+          type: dev
+      spec:
+        containers:
+          - name: nginx
+            image: nginx:1.8

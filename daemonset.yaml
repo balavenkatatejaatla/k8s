@@ -1,0 +1,19 @@
+apiVersion: apps/v1 
+kind: DaemonSet 
+metadata: 
+  name: simple-daemonset
+  namespace: teja-ns
+spec: 
+  selector: 
+    matchLabels: 
+      app: simple-daemonset 
+  template: 
+    metadata: 
+      labels: 
+        app: simple-daemonset 
+    spec: 
+      containers: 
+        - name: simple-container
+          image: busybox 
+          command: ["sh", "-c", "while true; do echo 'Running on node: $(hostname)'; sleep 60; done"]
+ 

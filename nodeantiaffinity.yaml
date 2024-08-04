@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    tier: dev
+    app: nginx
+  name: nginx-antideploy
+  namespace: teja-ns
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 10
+              preference:
+                matchExpressions:
+                  - key: tier
+                    operator: In
+                    values:
+                      - dev
+            - weight: 50
+              preference:
+                matchExpressions:
+                  - key: tier
+                    operator: In
+                    values:
+                      - qa
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: tier
+                    operator: NotIn
+                    values:
+                      - dev
+      containers:
+        - name: nginx
+          image: nginx
+     
+
+
+

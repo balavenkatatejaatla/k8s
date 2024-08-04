@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: webapp-quota
+  namespace: teja-ns
+spec:
+  hard:
+    limits.cpu: 8
+    pods: 10

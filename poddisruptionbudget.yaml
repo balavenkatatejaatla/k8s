@@ -1,0 +1,10 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: my-app-pdb
+  namespace: teja-ns
+spec:
+  minAvailable: 8
+  selector:
+    matchLabels:
+      app: dev
